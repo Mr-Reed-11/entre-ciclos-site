@@ -3,9 +3,9 @@
 # o Traefik cuida do TLS (Let's Encrypt) assim que o DNS apontar pra VPS.
 services:
   entreciclos:
-    build: .
-    image: entre-ciclos-site:latest
-    container_name: entre-ciclos-site
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: unless-stopped
     networks:
       - web
