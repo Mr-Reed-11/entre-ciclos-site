@@ -46,13 +46,12 @@ O repositório traz `Dockerfile` (multi-stage: build com pnpm → serve estátic
 Roteamento via **Traefik** na rede externa `web`, por **Host label** — igual ao frontend do
 n-store. Não publica porta: o Traefik entrega o TLS (Let's Encrypt) sozinho.
 
-1. **Subdomínio:** adicione `entreciclos` no **Cloudflare** (mesmo esquema dos outros
-   subdomínios — registro apontando pra VPS). Sem configurar DNS na máquina.
-2. **Portainer → Stacks → Add stack → Repository.**
+1. **Portainer → Stacks → Add stack → Repository.**
    - Repository URL: `https://github.com/Mr-Reed-11/entre-ciclos-site`
    - Reference: `refs/heads/master` · Compose path: `docker-compose.yml`
-3. **Deploy.** O Traefik publica em `https://entreciclos.nortixcode.com.br` assim que o DNS resolver.
-4. A cada push: **Pull and redeploy** (ou webhook) no Portainer.
+2. **Deploy.** A própria stack resolve o subdomínio e o TLS pela label `Host` do Traefik
+   (Cloudflare incluso) — nada de mexer em DNS na mão. Publica em `https://entreciclos.nortixcode.com.br`.
+3. A cada push: **Pull and redeploy** (ou webhook) no Portainer.
 
 > O compose usa `networks: web (external: true)` e as labels de Traefik com
 > `entrypoints=websecure` e `certresolver=lets-encrypt` — ajuste só se o seu Traefik usar outros nomes.
