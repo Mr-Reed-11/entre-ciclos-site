@@ -8,7 +8,14 @@ import {
   Terminal,
   Eye,
   ChevronDown,
+  Download,
+  Monitor,
 } from 'lucide-react'
+
+const DOWNLOADS = [
+  { icon: Monitor, os: 'Windows', note: '.zip · extraia e rode o .exe', href: '/downloads/entre-ciclos-windows.zip' },
+  { icon: Terminal, os: 'Linux', note: '.zip · extraia e rode o executável', href: '/downloads/entre-ciclos-linux.zip' },
+]
 
 const SHOTS = [
   { src: '/shots/titulo.png', title: 'Tela-título', desc: 'O ciclo começa de novo.' },
@@ -100,6 +107,7 @@ export default function App() {
             <a href="#conceito" className="hover:text-ink transition-colors">Conceito</a>
             <a href="#combate" className="hover:text-ink transition-colors">Combate</a>
             <a href="#galeria" className="hover:text-ink transition-colors">Galeria</a>
+            <a href="#baixar" className="rounded-md bg-green/15 border border-green/40 px-3 py-1.5 text-green hover:bg-green/25 transition-colors">Baixar</a>
           </div>
         </nav>
       </header>
@@ -119,10 +127,10 @@ export default function App() {
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a
-            href="#galeria"
-            className="rounded-md bg-green px-5 py-2.5 font-medium text-bg hover:brightness-110 transition"
+            href="#baixar"
+            className="inline-flex items-center gap-2 rounded-md bg-green px-5 py-2.5 font-medium text-bg hover:brightness-110 transition"
           >
-            Ver a galeria
+            <Download size={18} /> Baixar o protótipo
           </a>
           <a
             href="#conceito"
@@ -246,6 +254,45 @@ export default function App() {
               <p className="mt-2 text-muted text-sm leading-relaxed">{f.desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Baixar */}
+      <section id="baixar" className="relative z-10 mx-auto max-w-6xl px-4 py-20 border-t border-line">
+        <div className="card rounded-2xl p-8 sm:p-12 text-center relative overflow-hidden">
+          <div className="absolute -inset-10 bg-green/5 blur-3xl" aria-hidden />
+          <div className="relative">
+            <SectionLabel>Baixar</SectionLabel>
+            <h2 className="font-display text-xl sm:text-2xl text-ink leading-[1.5]">
+              Jogue o <span className="text-green">protótipo</span>
+            </h2>
+            <p className="mt-4 mx-auto max-w-xl text-muted leading-relaxed">
+              Uma fatia do Capítulo 1: explore o laboratório, encontre o primeiro inimigo e enfrente-o no
+              combate em primeira pessoa.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              {DOWNLOADS.map((d) => (
+                <a
+                  key={d.os}
+                  href={d.href}
+                  className="group inline-flex items-center gap-3 rounded-lg border border-line bg-bg/60 px-5 py-3 text-left hover:border-green/50 hover:bg-white/5 transition"
+                >
+                  <d.icon className="text-cyan group-hover:text-green transition" size={24} />
+                  <span>
+                    <span className="flex items-center gap-2 font-medium text-ink">
+                      <Download size={15} /> {d.os}
+                    </span>
+                    <span className="block text-xs text-muted">{d.note}</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+            <p className="mt-6 text-xs text-muted">
+              Controles: <span className="text-ink">setas</span> pra mover ·{' '}
+              <span className="text-ink">Z</span> confirma/interage · <span className="text-ink">X</span> volta ·{' '}
+              <span className="text-ink">C</span> pausa.
+            </p>
+          </div>
         </div>
       </section>
 
