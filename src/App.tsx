@@ -11,7 +11,10 @@ import {
   ChevronDown,
   Download,
   Monitor,
+  MessageCircle,
 } from 'lucide-react'
+
+const DISCORD_URL = 'https://discord.gg/uUCJAJYv6Y'
 
 const DOWNLOADS = [
   { icon: Monitor, os: 'Windows', note: '.zip · extraia e rode o .exe', href: '/downloads/entre-ciclos-windows.zip' },
@@ -109,6 +112,14 @@ export default function App() {
             <a href="#conceito" className="hover:text-ink transition-colors">Conceito</a>
             <a href="#combate" className="hover:text-ink transition-colors">Combate</a>
             <a href="#galeria" className="hover:text-ink transition-colors">Galeria</a>
+            <a
+              href={DISCORD_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="hidden sm:inline-flex items-center gap-1.5 hover:text-ink transition-colors"
+            >
+              <MessageCircle size={15} /> Discord
+            </a>
             <a href="#baixar" className="rounded-md bg-green/15 border border-green/40 px-3 py-1.5 text-green hover:bg-green/25 transition-colors">Baixar</a>
           </div>
         </nav>
@@ -295,6 +306,21 @@ export default function App() {
               <span className="text-ink">C</span> pausa.
             </p>
 
+            <div className="mt-8 border-t border-line pt-8">
+              <p className="text-muted">
+                Jogou? Entra no servidor oficial pra dar feedback, acompanhar o desenvolvimento e
+                conversar com a galera.
+              </p>
+              <a
+                href={DISCORD_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-4 inline-flex items-center gap-2 rounded-md border border-cyan/40 bg-cyan/10 px-5 py-2.5 font-medium text-cyan hover:bg-cyan/20 transition"
+              >
+                <MessageCircle size={18} /> Entrar no Discord
+              </a>
+            </div>
+
             {/* easter egg: um "build" que não devia estar aqui (SUJEITO 04 = Yury) */}
             {egg && (
               <div className="mt-8 mx-auto max-w-md rounded-lg border border-purple/40 bg-purple/5 p-5 text-left floaty">
@@ -356,6 +382,10 @@ export default function App() {
             <p className="mt-2">Protótipo em desenvolvimento · feito na Godot 4</p>
           </div>
           <div className="flex items-center gap-5">
+            <a href={DISCORD_URL} className="inline-flex items-center gap-1.5 hover:text-ink transition" target="_blank" rel="noreferrer">
+              <MessageCircle size={15} /> Discord
+            </a>
+            <span className="text-line">·</span>
             <a href="https://portfolio.nortixcode.com.br" className="hover:text-ink transition" target="_blank" rel="noreferrer">
               Vítor Ornelas
             </a>
