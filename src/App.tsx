@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   Swords,
   Shield,
@@ -93,6 +94,7 @@ function SectionLabel({ children }: { children: string }) {
 }
 
 export default function App() {
+  const [egg, setEgg] = useState(false)
   return (
     <div className="bg-grid scanlines relative min-h-screen">
       <Squares />
@@ -292,7 +294,33 @@ export default function App() {
               <span className="text-ink">Z</span> confirma/interage · <span className="text-ink">X</span> volta ·{' '}
               <span className="text-ink">C</span> pausa.
             </p>
+
+            {/* easter egg: um "build" que não devia estar aqui (SUJEITO 04 = Yury) */}
+            {egg && (
+              <div className="mt-8 mx-auto max-w-md rounded-lg border border-purple/40 bg-purple/5 p-5 text-left floaty">
+                <div className="flex items-center gap-3">
+                  <Ghost className="text-purple shrink-0" size={24} />
+                  <div>
+                    <p className="font-term text-xl leading-none text-purple blink">SUJEITO_04.zip</p>
+                    <p className="mt-1 text-xs text-muted">arquivo corrompido · origem desconhecida · 0 bytes</p>
+                  </div>
+                </div>
+                <p className="mt-4 text-sm italic text-muted">
+                  "Você já baixou esse ciclo antes.{' '}
+                  <span className="text-purple">Só não lembra.</span>"
+                </p>
+              </div>
+            )}
           </div>
+
+          {/* gatilho discreto do easter egg (cantinho do card) */}
+          <button
+            type="button"
+            onClick={() => setEgg((v) => !v)}
+            aria-label="?"
+            tabIndex={-1}
+            className="absolute bottom-2 right-2 h-3.5 w-3.5 rounded-[2px] border border-purple/20 opacity-25 hover:opacity-100 hover:border-purple/70 transition"
+          />
         </div>
       </section>
 
