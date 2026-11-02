@@ -46,7 +46,8 @@ O repositório traz `Dockerfile` (multi-stage: build com pnpm → serve estátic
 Roteamento via **Traefik** na rede externa `web`, por **Host label** — igual ao frontend do
 n-store. Não publica porta: o Traefik entrega o TLS (Let's Encrypt) sozinho.
 
-1. **DNS:** registro **A** `entreciclos` → IP da VPS (mesmo do `portfolio`/`n-store`).
+1. **Subdomínio:** adicione `entreciclos` no **Cloudflare** (mesmo esquema dos outros
+   subdomínios — registro apontando pra VPS). Sem configurar DNS na máquina.
 2. **Portainer → Stacks → Add stack → Repository.**
    - Repository URL: `https://github.com/Mr-Reed-11/entre-ciclos-site`
    - Reference: `refs/heads/master` · Compose path: `docker-compose.yml`
