@@ -38,60 +38,46 @@ O `vite.config.ts` já libera o host do subdomínio no `preview.allowedHosts`.
 
 ---
 
-## 🚀 Deploy na VPS (igual ao portfólio)
+## 🐳 Deploy com Portainer
 
-1. **Na VPS**, clonar/puxar o repositório e buildar:
+O repositório já traz `Dockerfile` (multi-stage: build com pnpm → serve estático com nginx),
+`nginx.conf` e `docker-compose.yml`. O container serve o site **e** os builds em `/downloads/`.
 
-   ```bash
-   git pull
-   pnpm install
-   pnpm build
-   ```
+### Opção A — Stack do Portainer a partir do Git (recomendado)
 
-2. **Servir o preview** (porta `4174`) de forma persistente — ex. com `pm2`:
+1. **Portainer → Stacks → Add stack → Repository.**
+2. Repository URL: o deste repo. Compose path: `docker-compose.yml`.
+3. Deploy. O Portainer builda a imagem e sobe o container (porta `8081` → `80` interna).
+4. Botão **Pull and redeploy** (ou webhook) pra atualizar a cada push.
 
-   ```bash
-   pm2 start "pnpm preview --port 4174" --name entreciclos
-   pm2 save
-   ```
+### Opção B — Build local e push de imagem
 
-   > Alternativa estática: apontar o nginx direto pra pasta `dist/` (ver abaixo), sem precisar do preview rodando.
+```bash
+docker build -t entre-ciclos-site:latest .
+docker run -d --restart unless-stopped -p 8081:80 --name entre-ciclos-site entre-ciclos-site:latest
+```
 
-3. **DNS:** criar um registro **A** `entreciclos` → IP da VPS (mesmo IP do `portfolio`).
+### Subdomínio
 
-4. **Nginx** — bloco do subdomínio (reverse proxy pro preview):
+- **DNS:** registro **A** `entreciclos` → IP da VPS (mesmo do `portfolio`).
+- **Proxy:** aponte o proxy do subdomínio (Nginx/NPM/Traefik) pra porta `8081` do container.
+  Se usa Traefik, há labels prontas (comentadas) no `docker-compose.yml`.
+- **HTTPS:** pelo seu proxy de sempre (certbot / NPM / Traefik + Let's Encrypt).
 
-   ```nginx
-   server {
-       server_name entreciclos.nortixcode.com.br;
+---
 
-       location / {
-           proxy_pass http://127.0.0.1:4174;
-           proxy_set_header Host $host;
-           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-           proxy_set_header X-Forwarded-Proto $scheme;
-       }
-   }
-   ```
+## 📦 Builds do jogo
 
-   Ou, servindo o `dist/` como estático (mais simples e leve):
+Ficam em `public/downloads/` e vão pro `dist/` no build, servidos em `/downloads/`:
 
-   ```nginx
-   server {
-       server_name entreciclos.nortixcode.com.br;
-       root /caminho/para/entre-ciclos-site/dist;
-       index index.html;
-       location / { try_files $uri $uri/ /index.html; }
-   }
-   ```
+- `entre-ciclos-windows.zip`
+- `entre-ciclos-linux.zip`
 
-5. **HTTPS:** `sudo certbot --nginx -d entreciclos.nortixcode.com.br`
+Pra atualizar, substitua os arquivos (mesmos nomes) e faça redeploy. Os links estão em `src/App.tsx`.
 
 ---
 
 ## 🖼️ Atualizar as prints
 
-As imagens ficam em `public/shots/`. Pra gerar novas a partir do jogo, abri as cenas na Godot
-com uma cena utilitária que captura o viewport (480×270 em 3x). É só substituir os arquivos
-mantendo os nomes (`combate.png`, `titulo.png`, `corredor.png`, `laboratorio.png`, `fluk.png`,
-`quarto.png`) ou ajustar a lista em `src/App.tsx`.
+As imagens ficam em `public/shots/`. Substitua mantendo os nomes (`combate.png`, `titulo.png`,
+`corredor.png`, `laboratorio.png`, `fluk.png`, `quarto.png`) ou ajuste a lista em `src/App.tsx`.
