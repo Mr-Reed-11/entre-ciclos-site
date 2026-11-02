@@ -1,18 +1,23 @@
-# Stack do Portainer. Build method: Repository (aponta pra este repo) ou suba
-# este arquivo como stack. Exponha a porta e aponte seu proxy do subdomínio
-# (Nginx/Traefik/NPM) pra ela, igual ao portfólio.
+# Stack do Portainer — mesmo padrão do n-store: Traefik na rede externa `web`,
+# roteamento por Host via labels (sem publicar porta). É só subir a stack;
+# o Traefik cuida do TLS (Let's Encrypt) assim que o DNS apontar pra VPS.
 services:
   entreciclos:
     build: .
     image: entre-ciclos-site:latest
     container_name: entre-ciclos-site
     restart: unless-stopped
-    ports:
-      - "8081:80"
-    # --- Se você usa Traefik, descomente e ajuste ao seu entrypoint/certresolver ---
-    # labels:
-    #   - "traefik.enable=true"
-    #   - "traefik.http.routers.entreciclos.rule=Host(`entreciclos.nortixcode.com.br`)"
-    #   - "traefik.http.routers.entreciclos.entrypoints=websecure"
-    #   - "traefik.http.routers.entreciclos.tls.certresolver=le"
-    #   - "traefik.http.services.entreciclos.loadbalancer.server.port=80"
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.entreciclos.rule=Host(`entreciclos.nortixcode.com.br`)"
+      - "traefik.http.routers.entreciclos.entrypoints=websecure"
+      - "traefik.http.routers.entreciclos.tls=true"
+      - "traefik.http.routers.entreciclos.tls.certresolver=lets-encrypt"
+      - "traefik.http.services.entreciclos.loadbalancer.server.port=80"
+
+networks:
+  web:
+    external: true

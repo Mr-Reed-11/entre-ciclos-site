@@ -38,31 +38,23 @@ O `vite.config.ts` já libera o host do subdomínio no `preview.allowedHosts`.
 
 ---
 
-## 🐳 Deploy com Portainer
+## 🐳 Deploy com Portainer (mesmo padrão do n-store)
 
-O repositório já traz `Dockerfile` (multi-stage: build com pnpm → serve estático com nginx),
+O repositório traz `Dockerfile` (multi-stage: build com pnpm → serve estático com nginx),
 `nginx.conf` e `docker-compose.yml`. O container serve o site **e** os builds em `/downloads/`.
 
-### Opção A — Stack do Portainer a partir do Git (recomendado)
+Roteamento via **Traefik** na rede externa `web`, por **Host label** — igual ao frontend do
+n-store. Não publica porta: o Traefik entrega o TLS (Let's Encrypt) sozinho.
 
-1. **Portainer → Stacks → Add stack → Repository.**
-2. Repository URL: o deste repo. Compose path: `docker-compose.yml`.
-3. Deploy. O Portainer builda a imagem e sobe o container (porta `8081` → `80` interna).
-4. Botão **Pull and redeploy** (ou webhook) pra atualizar a cada push.
+1. **DNS:** registro **A** `entreciclos` → IP da VPS (mesmo do `portfolio`/`n-store`).
+2. **Portainer → Stacks → Add stack → Repository.**
+   - Repository URL: `https://github.com/Mr-Reed-11/entre-ciclos-site`
+   - Reference: `refs/heads/master` · Compose path: `docker-compose.yml`
+3. **Deploy.** O Traefik publica em `https://entreciclos.nortixcode.com.br` assim que o DNS resolver.
+4. A cada push: **Pull and redeploy** (ou webhook) no Portainer.
 
-### Opção B — Build local e push de imagem
-
-```bash
-docker build -t entre-ciclos-site:latest .
-docker run -d --restart unless-stopped -p 8081:80 --name entre-ciclos-site entre-ciclos-site:latest
-```
-
-### Subdomínio
-
-- **DNS:** registro **A** `entreciclos` → IP da VPS (mesmo do `portfolio`).
-- **Proxy:** aponte o proxy do subdomínio (Nginx/NPM/Traefik) pra porta `8081` do container.
-  Se usa Traefik, há labels prontas (comentadas) no `docker-compose.yml`.
-- **HTTPS:** pelo seu proxy de sempre (certbot / NPM / Traefik + Let's Encrypt).
+> O compose usa `networks: web (external: true)` e as labels de Traefik com
+> `entrypoints=websecure` e `certresolver=lets-encrypt` — ajuste só se o seu Traefik usar outros nomes.
 
 ---
 
